@@ -212,9 +212,9 @@ import {
               onKeyDown={handleKeyPress}
               onChange={handleInputChange}
               placeholder="Type a message..."
-              className="rounded-full"
+              className="rounded-full py-6"
             />
-            <div className="absolute right-4 bottom-2  ">
+            <div className="absolute right-[2%] top-[35%]">
               <EmojiPicker
                 onChange={(value) => {
                   setMessage(message + value);
