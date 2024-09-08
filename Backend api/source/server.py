@@ -14,14 +14,14 @@ app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
 # Load the embeddings and chunked text
-with open('embeddings.npy', 'rb') as f:
+with open('../embeddings.npy', 'rb') as f:
     embeddings = np.load(f)
 
-with open('chunked_text.npy', 'rb') as f:
+with open('../chunked_text.npy', 'rb') as f:
     chunked_text = np.load(f, allow_pickle=True)
 
 # Load the FAISS index
-index = faiss.read_index('faiss_index.index')
+index = faiss.read_index('../faiss_index.index')
 
 # Load pre-trained sentence transformer model
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -45,7 +45,7 @@ def generate_response(query):
     The user input is: {query}
     Compile a recommendation to the user based on the recommended activity and the user input.
     """
-    key='PUT YOUR API KEY HERE IN SINGLE QUOTES'
+    key='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'
     client = Groq(api_key=key)
     completion = client.chat.completions.create(
         model="llama3-groq-70b-8192-tool-use-preview",
@@ -80,4 +80,4 @@ def api_generate():
     return jsonify({'response': response})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(port=5000)

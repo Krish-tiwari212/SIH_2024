@@ -16,7 +16,8 @@ import {
   import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
   import { ChatInput } from "@/src/components/ui/chat/chat-input";
   import useChatStore from "@/hooks/useChatStore";
-  
+  import axios from 'axios';
+
   interface ChatBottombarProps {
     isMobile: boolean;
   }
@@ -36,6 +37,18 @@ import {
     const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setMessage(event.target.value);
     };
+    // Add this function to handle the POST request
+    const sendPostRequest = async (userInput: string) => {
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/api/generate', {
+          query: userInput,
+        });
+        return response.data.response;
+      } catch (error) {
+        console.error('Error sending POST request:', error);
+        return null;
+      }
+    };
   
     const sendMessage = (newMessage: Message) => {
       useChatStore.setState((state) => ({
@@ -54,7 +67,7 @@ import {
       setMessage("");
     };
   
-    const handleSend = () => {
+    const handleSend = async () => {
       if (message.trim()) {
         const newMessage: Message = {
           id: message.length + 1,
@@ -64,7 +77,20 @@ import {
         };
         sendMessage(newMessage);
         setMessage("");
-  
+    
+        const responseMessage = await sendPostRequest(message.trim());
+        console.log(responseMessage);
+        if (responseMessage) {
+          const responseMessageObj: Message = {
+            id: newMessage.id + 1,
+            name: "Legal AI",
+            avatar: "https://images.freeimages.com/images/large-previews/971/basic-shape-avatar-1632968.jpg?fmt=webp&h=350",
+            message: responseMessage,
+            timestamp: formattedTime,
+          };
+          sendMessage(responseMessageObj);
+        }
+        
         if (inputRef.current) {
           inputRef.current.focus();
         }
@@ -92,7 +118,7 @@ import {
               avatar:
                 "https://images.freeimages.com/images/large-previews/971/basic-shape-avatar-1632968.jpg?fmt=webp&h=350",
               name: "Legal AI",
-              message: "Hey!",
+              message: "Hello there! How can I help you today? 😊",
               timestamp: formattedTime,
             },
           ]);
